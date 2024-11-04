@@ -1,5 +1,4 @@
-
 from .criterion import *
 from .dataset import *
-from . import model
-from . import optimizer
+from .model import *
+from .optimizer import *

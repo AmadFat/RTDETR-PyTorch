@@ -1,41 +1,35 @@
-import torch 
-import torch.utils.data as data
+import torch
+from torch.utils.data import DataLoader
 
 
-__all__ = ['DataLoader']
+__all__ = ["DataLoader"]
 
 
-def default_collate_fn(items):
-    '''default collate_fn
-    '''    
-    return torch.cat([x[0][None] for x in items], dim=0), [x[1] for x in items]
+def default_collate_fn(xs):
+    """default collate_fn"""
+    imgs = [x[0] for x in xs]
+    anns = [x[1] for x in xs]
+    return torch.stack(imgs), anns
 
 
-class DataLoader(data.DataLoader):
+class ArmorDataLoader(DataLoader):
     def __init__(
-            self, 
+        self,
+        dataset,
+        batch_size,
+        num_workers=0,
+        drop_last=True,
+    ):
+        sampler = data.RandomSampler(dataset)
+        bsampler = data.BatchSampler(sampler, batch_size, drop_last)
+        super().__init__(
             dataset,
-            batch_size,
-            shuffle=True, 
-            num_workers=0,
-            collate_fn=default_collate_fn, 
-            drop_last=True, 
-            **kwargs):
-        
-        self.shuffle = shuffle
-        super(DataLoader, self).__init__(
-            dataset=dataset, 
-            batch_size=batch_size, 
-            shuffle=shuffle, 
-            num_workers=num_workers, 
-            collate_fn=collate_fn, 
-            drop_last=drop_last, 
-            **kwargs)
+            batch_sampler=bsampler,
+            num_workers=num_workers,
+            collate_fn=default_collate_fn,
+        )
 
     def __repr__(self) -> str:
-        format_string = self.__class__.__name__ + "("
-        for n in ['dataset', 'batch_size', 'num_workers', 'drop_last', 'collate_fn']:
-            format_string += "\n"
-            format_string += "    {0}: {1}".format(n, getattr(self, n))
-        format_string += "\n)"
-        return format_string
+        fstr = self.__class__.__name__ + "(\n"
+        attrs = ["dataset", "batch_size", "num_workers", "drop_last", "collate_fn"]
+        return fstr + "\n".join(f"  {a}={getattr(self, a)}," for a in attrs) + "\n)"

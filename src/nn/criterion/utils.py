@@ -1,20 +1,22 @@
-import torch 
+import torch
 import torchvision
 
 
+__all__ = [
+    "format_target",
+]
 
-def format_target(targets):
-    '''
-    Args:
-        targets (List[Dict]),
-    Return: 
-        tensor (Tensor), [im_id, label, bbox,]
-    '''
-    outputs = []
-    for i, tgt in enumerate(targets):
-        boxes =  torchvision.ops.box_convert(tgt['boxes'], in_fmt='xyxy', out_fmt='cxcywh') 
-        labels = tgt['labels'].reshape(-1, 1)
-        im_ids = torch.ones_like(labels) * i
-        outputs.append(torch.cat([im_ids, labels, boxes], dim=1))
 
+def format_target(tgts):
+    outputs = [
+        torch.cat(
+            [
+                torch.ones_like(tgt["labels"]) * i,
+                tgt["labels"],
+                tgt["quads"],
+            ],
+            dim=1,
+        )
+        for i, tgt in enumerate(tgts)
+    ]
     return torch.cat(outputs, dim=0)

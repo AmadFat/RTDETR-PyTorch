@@ -4,16 +4,12 @@ sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
 from src import zoo
 from utils import fit, val, str2bool
 from src.data.coco.coco_dataset import CocoDetection
-from src.misc import dist
 from src.data.dataloader import DataLoader
 import argparse
 
 
 def main():
-    args = parser.parse_args()
-
-    dist.init_distributed()
-    
+    args = parser.parse_args()    
     model = getattr(zoo.model, args.model_type)()
     optimizer = getattr(zoo.optimizer, args.model_type)(model)
 

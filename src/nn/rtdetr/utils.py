@@ -4,17 +4,13 @@
 import math
 import torch 
 import torch.nn as nn
-import torch.nn.functional as F 
+import torch.nn.functional as F
 import datetime
-import re
 import src.misc.dist as dist
-from typing import Dict
-import torch.optim.lr_scheduler as lr_scheduler
 
 
-def inverse_sigmoid(x: torch.Tensor, eps: float=1e-5) -> torch.Tensor:
-    x = x.clip(min=0., max=1.)
-    return torch.log(x.clip(min=eps) / (1 - x).clip(min=eps))
+def inverse_sigmoid(x: torch.Tensor, eps: float=1e-6):
+    return (x.clamp(min=eps) / (1 - x).clamp(min=eps)).log()
 
 
 def deformable_attention_core_func(value, value_spatial_shapes, sampling_locations, attention_weights):

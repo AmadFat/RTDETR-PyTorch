@@ -1,11 +1,7 @@
-"""by lyuwenyu
-"""
-
 import torch.nn as nn 
 import torch.nn.functional as F 
 
 import numpy as np 
-from src.nn.backbone.presnet import PResNet
 
 
 class RTDETR(nn.Module):
@@ -17,7 +13,6 @@ class RTDETR(nn.Module):
         self.multi_scale = multi_scale
         
     def forward(self, x, targets=None):
-        # Why this code in here?...this code must be in the dataset/dataloader, need to fix this
         if self.multi_scale and self.training:
             sz = np.random.choice(self.multi_scale)
             x = F.interpolate(x, size=[sz, sz])

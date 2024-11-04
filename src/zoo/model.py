@@ -1,8 +1,7 @@
-
-from src.nn.rtdetr.hybrid_encoder import HybridEncoder
-from src.nn.rtdetr.rtdetr import RTDETR
-from src.nn.rtdetr.rtdetr_decoder import RTDETRTransformer
-from src.nn.backbone.presnet import PResNet
+from src.nn import HybridEncoder
+from src.nn import RTDETR
+from src.nn import QuadRTDETRTransformer
+from src.nn import PResNet
 
 
 def r50vd_backbone(
@@ -68,7 +67,7 @@ def r50vd_decoder(
         eval_idx=-1,
         eval_spatial_size=[640, 640]):
 
-    return RTDETRTransformer(
+    return QuadRTDETRTransformer(
         feat_channels=feat_channels,
         feat_strides=feat_strides,
         hidden_dim=hidden_dim,
@@ -153,3 +152,8 @@ def r101vd():
     )
 
     return model
+
+
+if __name__ == "__main__":
+    model = r18vd()
+    print(model)
